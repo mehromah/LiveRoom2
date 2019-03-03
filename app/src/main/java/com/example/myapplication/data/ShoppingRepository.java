@@ -9,10 +9,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.example.myapplication.model.MainCloudDataSource;
-import com.example.myapplication.model.PRSMBL003;
-import com.example.myapplication.model.PRSMBL004;
-import com.example.myapplication.model.PRSMBL005;
-import com.example.myapplication.model.api.JsonResponse;
+import com.example.myapplication.model.Product;
 import com.example.myapplication.model.api.RetrofitSingleton;
 
 import org.reactivestreams.Subscription;
@@ -20,9 +17,8 @@ import org.reactivestreams.Subscription;
 import java.util.Collections;
 import java.util.List;
 
-import io.reactivex.Flowable;
+
 import io.reactivex.FlowableSubscriber;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -30,21 +26,22 @@ import io.reactivex.schedulers.Schedulers;
 public class ShoppingRepository implements ShoppingDataSource {
     private RetrofitSingleton cloudDataSource;
     private  LocalDataSource localDataSource;
-    private LiveData<List<com.example.myapplication.model.api.JsonResponse>> JsonResponse;
+    private LiveData<List<Product>> getProduct;
+
 
 
     public ShoppingRepository(Application application) {
         localDataSource = AppDatabase.getInstance(application).getLocalDataSource();
         cloudDataSource = new MainCloudDataSource();
-        JsonResponse = localDataSource.getJsonResponse();
+        getProduct = localDataSource.getProduct();
 
     }
 
-    @Override
-    public Flowable<List<JsonResponse>> getJsonResponse() {
-        cloudDataSource.getJsonResponse().subscribeOn(Schedulers.newThread())
+    public LiveData<List<Product>> getProductList() {
+
+        cloudDataSource.getProduct().subscribeOn(Schedulers.newThread())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new FlowableSubscriber<List<JsonResponse>>() {
+        .subscribe(new FlowableSubscriber<List<Product>>() {
             @Override
             public void onSubscribe(Subscription s) {
                 s.request(Long.MAX_VALUE);
@@ -52,9 +49,11 @@ public class ShoppingRepository implements ShoppingDataSource {
             }
 
             @Override
-            public void onNext(List<com.example.myapplication.model.api.JsonResponse> jsonResponses) {
-                    localDataSource.saveJsonResponseList(jsonResponses);
+            public void onNext(List<Product> productList) {
+                localDataSource.saveProductList(productList);
             }
+
+
 
             @Override
             public void onError(Throwable t) {
@@ -68,37 +67,43 @@ public class ShoppingRepository implements ShoppingDataSource {
             }
         });
 
-        return localDataSource.getJsonResponse();
+        return localDataSource.getProduct();
     }
 
 
-    LiveData<List<JsonResponse>> getGetJsonResponse() {
-        return JsonResponse;
+    public LiveData<List<Product>> getProduct() {
+        return getProduct;
     }
 
 
 
-    public void insert(JsonResponse jsonResponse) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CUPCAKE) {
-            new insertAsyncTask(localDataSource).execute(jsonResponse);
-        }
+    public void insert(Product product) {
+        new insertAsyncTask(localDataSource).execute((Runnable) product);
     }
+
+
 
 
     @TargetApi(Build.VERSION_CODES.CUPCAKE)
-    private static class insertAsyncTask extends AsyncTask<JsonResponse, Void, Void> {
+    private static class insertAsyncTask extends AsyncTask<Product, Void, Void> {
 
         private LocalDataSource mAsyncTaskDao;
+        private Product[] params;
 
         insertAsyncTask(LocalDataSource dao) {
             mAsyncTaskDao = dao;
         }
 
+
+
         @Override
-        protected Void doInBackground(final JsonResponse... params) {
-            mAsyncTaskDao.saveJsonResponseList(Collections.singletonList(params[0]));
+        protected Void doInBackground(final Product... params) {
+            this.params = params;
+            mAsyncTaskDao.saveProductList(Collections.singletonList(params[0]));
             return null;
         }
+
+
     }
 
 

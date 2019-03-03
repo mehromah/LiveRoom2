@@ -12,7 +12,7 @@ public abstract class RetrofitSingleton implements ShoppingDataSource {
     public RetrofitSingleton() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
-                    .baseUrl("http://192.168.200.10:6139/")
+                    .baseUrl("http://expertdevelopers.ir/api/v1/")
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
 

@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.example.myapplication.model.api.JsonResponse;
+import com.example.myapplication.model.Product;
 import com.example.myapplication.slider.MainSliderAdapter;
 import com.example.myapplication.slider.PicassoImageLoadingService;
 
@@ -27,43 +27,19 @@ public class MainActivity extends BaseActivity  implements View.OnClickListener 
         setContentView(R.layout.activity_main);
         setupViews();
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getJsonResponse().observe(this, new Observer<List<JsonResponse>>() {
+        viewModel.getJsonResponse().observe(this, new Observer<List<Product>>() {
             @Override
-            public void onChanged(@Nullable final List<JsonResponse> jsonResponses) {
-                productAdapter.setProduct(jsonResponses);
+            public void onChanged(@Nullable final List<Product> jsonResponses) {
+                productAdapter.setProducts(jsonResponses);
             }
         });
     }
 
 
     private void setupViews() {
-        Slider.init(new PicassoImageLoadingService(this));
-
-        Slider slider = findViewById(R.id.banner_slider1);
-        slider.setAdapter(new MainSliderAdapter());
 
 
 
-
-
-
-
-
-
-        productRecyclerView = findViewById(R.id.rv_main_popularProducts);
-        productRecyclerView.setLayoutManager(new LinearLayoutManager(
-                this, LinearLayoutManager.HORIZONTAL, true
-        ));
-        productAdapter = new ProductAdapter(this);
-        productRecyclerView.setAdapter(productAdapter);
-
-
-        prsmbl003RecyclerView = findViewById(R.id.rv_main_latestProducts);
-        prsmbl003RecyclerView.setLayoutManager(new LinearLayoutManager(
-                this, LinearLayoutManager.HORIZONTAL, true
-        ));
-        productAdapter = new ProductAdapter(this);
-        productRecyclerView.setAdapter(productAdapter);
 
     }
 

@@ -1,8 +1,8 @@
 package com.example.myapplication.model;
 
 import android.arch.lifecycle.LiveData;
+
 import com.example.myapplication.model.api.ApiService;
-import com.example.myapplication.model.api.JsonResponse;
 import com.example.myapplication.model.api.RetrofitSingleton;
 
 import java.util.List;
@@ -16,8 +16,9 @@ public class MainCloudDataSource extends RetrofitSingleton {
 
     }
 
+
     @Override
-    public LiveData<List<JsonResponse>> getJsonResponse() {
-        return apiService.getJSON();
+    public LiveData<List<Product>> getProduct() {
+        return null;
     }
 }

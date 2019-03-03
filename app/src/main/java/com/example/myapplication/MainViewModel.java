@@ -6,38 +6,38 @@ import android.arch.lifecycle.LiveData;
 
 
 import com.example.myapplication.data.ShoppingRepository;
-import com.example.myapplication.model.api.JsonResponse;
+import com.example.myapplication.model.Product;
 
 import java.util.List;
 
 public class MainViewModel extends AndroidViewModel {
     private ShoppingRepository shoppingRepository;
-    private LiveData<List<JsonResponse>> jsonResponse;
+    private LiveData<List<Product>> getProduct;
 
     public MainViewModel(Application application) {
         super(application);
         shoppingRepository = new ShoppingRepository(application);
-        jsonResponse = shoppingRepository.getJsonResponse();
+        getProduct = shoppingRepository.getProduct();
     }
 
 
-    LiveData<List<JsonResponse>> getJsonResponse() {
-        return jsonResponse;
+    LiveData<List<Product>> getJsonResponse() {
+        return getProduct;
     }
 
 
 
-    void saveJsonResponseList(JsonResponse jsonResponse) {
-        shoppingRepository.insert(jsonResponse);
+    void saveJsonResponseList(Product product) {
+        shoppingRepository.insert(product);
     }
 
-//    public void synchronization(List<JsonResponse> jsonResponseList) {
-//        //   shoppingRepository.synchronization(jsonResponseList);
-//    }
-//
-//    public void updateOrCreate(JsonResponse jsonResponse) {
-//       //   shoppingRepository.updateOrCreate(jsonResponse);
-//    }
+    public void synchronization(List<Product> jsonResponseList) {
+        //   shoppingRepository.synchronization(jsonResponseList);
+    }
+
+    public void updateOrCreate(Product jsonResponse) {
+       //   shoppingRepository.updateOrCreate(jsonResponse);
+    }
 
 
 }
